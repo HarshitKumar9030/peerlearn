@@ -2,3 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --input-bg: #f1f1f1;
+    --input-text: #333;
+    --input-border: #ccc;
+    --button-bg: #e1e1e1;
+    --dropdown-bg: #fff;
+    --dropdown-text: #000;
+  }
+  
+  [data-theme='dark'] {
+    --input-bg: #2D2D2D;
+    --input-text: #FFF;
+    --input-border: #555;
+    --button-bg: #3B3B3B;
+    --dropdown-bg: #333;
+    --dropdown-text: #FFF;
+  }

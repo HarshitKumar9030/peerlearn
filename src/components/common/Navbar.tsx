@@ -1,21 +1,20 @@
 'use client';
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ModeToggle } from '../ui/theme-switcher';
 import { User, LogIn, Menu, X } from 'lucide-react';
 import clsx from 'clsx';
+import { Session } from 'next-auth';
 
-const Navbar = () => {
-  const { theme } = useTheme();
+interface NavbarProps {
+  session: Session | null;
+}
+
+const Navbar = ({ session }: NavbarProps) => {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const links = [
     { name: 'Home', href: '/' },
@@ -26,8 +25,6 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  if (!mounted) return null;
-
   return (
     <nav className="relative flex items-center justify-between px-6 py-4 bg-transparent">
       <div className="text-lg font-semibold tracking-tight">
@@ -36,6 +33,7 @@ const Navbar = () => {
         </Link>
       </div>
 
+      {/* Desktop Links */}
       <div className="hidden md:flex items-center space-x-8">
         {links.map((link) => (
           <Link
@@ -64,7 +62,7 @@ const Navbar = () => {
 
       <div className="hidden md:flex items-center space-x-4">
         <ModeToggle />
-        {isAuthenticated ? (
+        {session ? (
           <Link href="/profile" aria-label="Profile">
             <User className="w-6 h-6 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 transition-colors" />
           </Link>
@@ -79,12 +77,14 @@ const Navbar = () => {
         )}
       </div>
 
+      {/* Mobile Slide-in Menu */}
       <div
         className={clsx(
           'fixed inset-0 z-40 flex flex-col items-center justify-start p-6 space-y-8 bg-neutral-100 dark:bg-neutral-900 transition-transform',
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
+        {/* Close Button */}
         <button
           onClick={toggleMenu}
           className="self-end mb-4 text-gray-800 dark:text-gray-200"
@@ -109,7 +109,7 @@ const Navbar = () => {
         ))}
 
         <ModeToggle />
-        {isAuthenticated ? (
+        {session ? (
           <Link href="/profile" aria-label="Profile" onClick={toggleMenu}>
             <User className="w-6 h-6 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 transition-colors" />
           </Link>

@@ -3,6 +3,18 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/common/Navbar";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import Providers from "./Providers";
+import { Poppins } from "next/font/google";
+import { Session } from "next-auth";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,24 +23,28 @@ export const metadata: Metadata = {
   description: "Learn and manage stress effectively!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session: Session | null = await getServerSession(authOptions);
+
   return (
     <html lang="en">
-      <body className={`inter.className dark:bg-neutral-900 bg-white`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          {children}
-        </ThemeProvider>
-      </body>
+      <Providers>
+        <body className={`${inter.className} dark:bg-neutral-900 bg-white`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar session={session} />
+            <main className="pointer-events-auto">{children}</main>
+          </ThemeProvider>
+        </body>
+      </Providers>
     </html>
   );
 }
