@@ -8,6 +8,8 @@ import { getServerSession } from "next-auth";
 import Providers from "./Providers";
 import { Poppins } from "next/font/google";
 import { Session } from "next-auth";
+import { Toaster } from "@/components/ui/toaster"
+
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -40,8 +42,10 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar session={session} />
-            <main className="pointer-events-auto">{children}</main>
+            <Navbar />
+            <main className="pointer-events-auto">{children}
+              <Toaster />
+            </main>
           </ThemeProvider>
         </body>
       </Providers>

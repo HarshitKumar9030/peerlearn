@@ -3,21 +3,25 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useToast } from "@/components/ui/use-toast";
 import PhoneInput from 'react-phone-input-2';
 
 const Signup = () => {
   const { data: session } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const { toast } = useToast(); 
+  const router = useRouter(); 
 
   useEffect(() => {
     if (session?.user) {
-      window.location.reload();
+      router.replace('/'); 
     }
-  }, [session]);
+  }, [session, router]);
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -35,19 +39,35 @@ const Signup = () => {
           }
         );
 
-        await signIn('credentials', {
+        const signInResponse = await signIn('credentials', {
           email: signupResponse.data.email,
           password: formData.get('password') as string,
           redirect: false,
         });
+
+        if (signInResponse?.ok) {
+          toast({
+            title: "🎉 Registration Successful",
+            description: "You have been logged in and redirected.",
+            variant: "default", 
+            className: "border border-purple-600 shadow-lg", 
+          });
+          router.replace('/'); 
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           const errorMessage = error.response?.data.message;
           setError(errorMessage || 'Something went wrong. Please try again.');
+          toast({
+            title: "❌ Registration Failed",
+            description: errorMessage || "Something went wrong. Please try again.",
+            variant: "destructive",
+            className: "border border-red-600 shadow-lg text-red-700 dark:text-red-400 bg-neutral-800", 
+          });
         }
       }
     },
-    []
+    [router, toast]
   );
 
   return (

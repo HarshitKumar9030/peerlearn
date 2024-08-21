@@ -4,16 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ModeToggle } from '../ui/theme-switcher';
-import { User, LogIn, Menu, X } from 'lucide-react';
+import { LogIn, Menu, X, Loader } from 'lucide-react';
 import clsx from 'clsx';
-import { Session } from 'next-auth';
+import { UserMenu } from '@/components/common/UserMenu'; 
+import { useSession } from 'next-auth/react';
 
-interface NavbarProps {
-  session: Session | null;
-}
-
-const Navbar = ({ session }: NavbarProps) => {
+const Navbar = () => {
   const pathname = usePathname();
+  const { data: session, status } = useSession(); // Using status to track session loading state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const links = [
@@ -50,7 +48,20 @@ const Navbar = ({ session }: NavbarProps) => {
         ))}
       </div>
 
-      <div className="md:hidden">
+      <div className="md:hidden flex items-center space-x-4">
+        {status === 'loading' ? (
+          <Loader className="w-5 h-5 text-purple-600 animate-spin" />
+        ) : session ? (
+          <UserMenu session={session} />
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center px-3 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            <LogIn className="w-5 h-5 mr-1" />
+            Login
+          </Link>
+        )}
         <button onClick={toggleMenu} aria-label="Toggle Menu">
           {isMenuOpen ? (
             <X className="w-6 h-6 text-gray-800 dark:text-gray-200" />
@@ -62,10 +73,10 @@ const Navbar = ({ session }: NavbarProps) => {
 
       <div className="hidden md:flex items-center space-x-4">
         <ModeToggle />
-        {session ? (
-          <Link href="/profile" aria-label="Profile">
-            <User className="w-6 h-6 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 transition-colors" />
-          </Link>
+        {status === 'loading' ? (
+          <Loader className="w-5 h-5 text-purple-600 animate-spin" />
+        ) : session ? (
+          <UserMenu session={session} />
         ) : (
           <Link
             href="/login"
@@ -109,10 +120,10 @@ const Navbar = ({ session }: NavbarProps) => {
         ))}
 
         <ModeToggle />
-        {session ? (
-          <Link href="/profile" aria-label="Profile" onClick={toggleMenu}>
-            <User className="w-6 h-6 text-gray-800 dark:text-gray-200 hover:text-purple-700 dark:hover:text-purple-400 transition-colors" />
-          </Link>
+        {status === 'loading' ? (
+          <Loader className="w-5 h-5 text-purple-600 animate-spin mt-4" />
+        ) : session ? (
+          <UserMenu session={session} />
         ) : (
           <Link
             href="/login"

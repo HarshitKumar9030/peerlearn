@@ -16,6 +16,8 @@ const UserSchema = new Schema<UserDocument>(
       type: String,
       unique: true,
       required: false,
+      default: undefined,
+      sparse: true, 
     },
     instagram: {
       type: String,
