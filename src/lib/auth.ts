@@ -59,6 +59,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           id: u.id,
           phone: u.phone,
+          supabaseId: u.supabaseId,
         };
       }
       return token;
@@ -71,6 +72,7 @@ export const authOptions: NextAuthOptions = {
           _id: token.id,
           name: token.name,
           phone: token.phone,
+          supabaseId: token.supabaseId,
         },
       };
     },

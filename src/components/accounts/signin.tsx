@@ -50,9 +50,9 @@ const Signin = () => {
   );
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-neutral-300 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 text-neutral-900 dark:text-neutral-100">
+    <div className="flex items-center justify-center min-h-screen bg-grid-black/5 dark:bg-neutral-900 bg-neutral-100 dark:bg-grid-white/5 text-neutral-900 dark:text-neutral-100">
       <motion.div
-        className="w-full max-w-md p-8 bg-white dark:bg-neutral-900 rounded-lg shadow-lg"
+        className="w-full max-w-md p-8 bg-white dark:bg-neutral-800 rounded-lg shadow-lg"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
@@ -75,7 +75,7 @@ const Signin = () => {
               type="email"
               name="email"
               placeholder="email@example.com"
-              className="w-full px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+              className="w-full px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
               required
             />
           </div>
@@ -86,7 +86,7 @@ const Signin = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
-                className="w-full px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                className="w-full px-4 py-2 rounded-lg bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
                 required
               />
               <button
@@ -106,13 +106,13 @@ const Signin = () => {
           </button>
         </form>
         <div className="relative flex items-center justify-center my-6">
-          <span className="absolute px-2 bg-white dark:bg-neutral-900 text-neutral-400">or</span>
+          <span className="absolute px-2 bg-white dark:bg-neutral-800 text-neutral-400">or</span>
           <div className="w-full h-px bg-neutral-300 dark:bg-neutral-700" />
         </div>
         <button
           type="button"
           onClick={() => signIn("google")}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+          className="w-full flex items-center justify-center gap-2 py-3 bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
         >
           <svg
             className="w-5 h-5"

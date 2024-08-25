@@ -63,10 +63,11 @@ const UserSchema = new Schema<UserDocument>(
     studySessions: [
       {
         topic: { type: String, required: true },
-        duration: { type: Number, required: true }, // in minutes
+        duration: { type: Number, required: true },
         completedAt: { type: Date, default: Date.now },
       },
     ],
+    supabaseId: { type: String, unique: true },
   },
   {
     timestamps: true,

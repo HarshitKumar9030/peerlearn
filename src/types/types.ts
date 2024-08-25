@@ -19,6 +19,7 @@ export interface IStudySession {
 }
 
 export interface UserDocument extends mongoose.Document {
+  _id: string;
   email: string;
   username?: string;
   instagram?: string;
@@ -31,4 +32,5 @@ export interface UserDocument extends mongoose.Document {
   phone?: string;
   groups: IGroup[];
   studySessions: IStudySession[];
+  supabaseId: string;
 }

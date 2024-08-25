@@ -9,6 +9,7 @@ import Providers from "./Providers";
 import { Poppins } from "next/font/google";
 import { Session } from "next-auth";
 import { Toaster } from "@/components/ui/toaster"
+import { Footer } from "@/components/common/Footer";
 
 
 const poppins = Poppins({
@@ -46,6 +47,7 @@ export default async function RootLayout({
             <main className="pointer-events-auto">{children}
               <Toaster />
             </main>
+            <Footer />
           </ThemeProvider>
         </body>
       </Providers>

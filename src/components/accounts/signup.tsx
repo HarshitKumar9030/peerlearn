@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useToast } from "@/components/ui/use-toast";
-import PhoneInput from 'react-phone-input-2';
 
 const Signup = () => {
   const { data: session } = useSession();
@@ -50,7 +49,6 @@ const Signup = () => {
             title: "🎉 Registration Successful",
             description: "You have been logged in and redirected.",
             variant: "default", 
-            className: "border border-purple-600 shadow-lg", 
           });
           router.replace('/'); 
         }
@@ -62,7 +60,6 @@ const Signup = () => {
             title: "❌ Registration Failed",
             description: errorMessage || "Something went wrong. Please try again.",
             variant: "destructive",
-            className: "border border-red-600 shadow-lg text-red-700 dark:text-red-400 bg-neutral-800", 
           });
         }
       }
@@ -71,7 +68,7 @@ const Signup = () => {
   );
 
   return (
-    <div className="flex items-center py-8 justify-center min-h-screen bg-gradient-to-br from-neutral-100 via-neutral-200 to-neutral-300 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 text-neutral-900 dark:text-neutral-100">
+    <div className="flex items-center py-20 justify-center min-h-screen dark:bg-grid-white/5 bg-grid-black/5 w-full h-full bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
       <div className="relative flex max-w-4xl w-full rounded-xl overflow-hidden shadow-xl bg-white dark:bg-neutral-900">
         <div className="hidden lg:flex flex-col justify-center items-center p-8 bg-gradient-to-br from-purple-600 to-purple-800 text-white">
           <Image

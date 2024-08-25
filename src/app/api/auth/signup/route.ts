@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
 
 const userSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -17,17 +18,51 @@ const userSchema = z.object({
   description: z.string().optional(),
 });
 
-const adjectives = ["swift", "silent", "dizzy", "happy", "brave"];
-const nouns = ["tiger", "falcon", "bee", "river", "mountain"];
-const verbs = ["dance", "run", "fly", "jump", "code"];
+const adjectives = [
+  "swift",
+  "silent",
+  "dizzy",
+  "happy",
+  "brave",
+  "fearless",
+  "crazy",
+  "fiert",
+  "hot",
+  "insane",
+];
+const nouns = [
+  "tiger",
+  "falcon",
+  "bee",
+  "river",
+  "mountain",
+  "monument",
+  "luffy",
+  "dragon",
+  "gojo",
+  "light",
+];
+const verbs = [
+  "dance",
+  "run",
+  "fly",
+  "jump",
+  "code",
+  "write",
+  "sleep",
+  "honor",
+  "play",
+];
 
 function generateRandomUsername() {
-  const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const randomAdjective =
+    adjectives[Math.floor(Math.random() * adjectives.length)];
   const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
   const randomVerb = verbs[Math.floor(Math.random() * verbs.length)];
-  const randomNumber = Math.floor(100 + Math.random() * 900); 
+  const randomNumber = Math.floor(100 + Math.random() * 900);
   const wordChoices = [randomAdjective, randomNoun, randomVerb];
-  const randomWord = wordChoices[Math.floor(Math.random() * wordChoices.length)];
+  const randomWord =
+    wordChoices[Math.floor(Math.random() * wordChoices.length)];
   return `${randomWord}${randomNumber}`; // dance324, swift567 etc
 }
 
@@ -46,15 +81,14 @@ export async function POST(request: Request) {
       );
     }
 
-    let { name, email, password, phone, username, github, description } =
-      result.data;
+    let { name, email, password, phone, username, github, description } = result.data;
 
     // Generate a random username if none is provided
     if (!username) {
       username = generateRandomUsername();
     }
 
-    // Check if email or username already exists
+    // Check if email or username already exists in MongoDB
     let userFound = await User.findOne({ $or: [{ email }, { username }] });
 
     // Keep generating a new username if the generated one already exists
@@ -65,6 +99,24 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    const supabase = createClient();
+    const { data: supabaseData, error: supabaseError } = await supabase
+      .from("users")
+      .insert({
+        username,
+        avatar_url: null,
+      })
+      .select("id")
+      .single();
+
+    if (supabaseError) {
+      console.error("Error creating user in Supabase:", supabaseError.message);
+      return NextResponse.json(
+        { message: "Error creating user in Supabase: " + supabaseError.message },
+        { status: 500 }
+      );
+    }
+
     const user = new User({
       name,
       email,
@@ -73,6 +125,7 @@ export async function POST(request: Request) {
       github,
       description,
       password: hashedPassword,
+      supabaseId: supabaseData.id, 
     });
 
     const savedUser = await user.save();
@@ -82,6 +135,7 @@ export async function POST(request: Request) {
         name: savedUser.name,
         email: savedUser.email,
         username: savedUser.username,
+        supabaseId: savedUser.supabaseId,
         createdAt: savedUser.createdAt,
         updatedAt: savedUser.updatedAt,
       },
