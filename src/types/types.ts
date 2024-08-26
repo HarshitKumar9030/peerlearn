@@ -1,16 +1,5 @@
 import mongoose, { Types } from "mongoose";
 
-export interface IChat {
-  message: string;
-  sender: Types.ObjectId; 
-  timestamp: Date;
-}
-
-export interface IGroup {
-  name: string;
-  members: Types.ObjectId[]; 
-  chatHistory?: IChat[];
-}
 
 export interface IStudySession {
   topic: string;
@@ -33,4 +22,58 @@ export interface UserDocument extends mongoose.Document {
   groups: IGroup[];
   studySessions: IStudySession[];
   supabaseId: string;
+}
+
+export interface IChat {
+  id: string;
+  senderId: string;
+  recieverId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IGroup {
+  id: string;
+  name: string;
+  isPrivate: boolean;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IMessage {
+  id: string;
+  content: string;
+  userId: string;
+  chatId: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  reactions?: string; // Emoji as keys, list of users who reacted
+  imageUrl?: string;
+}
+
+export interface IGroupMessage {
+  id: string;
+  content: string;
+  userId: string;
+  groupId: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  reactions?: { [emoji: string]: string[] }; // Emoji as keys, list of users who reacted
+  imageUrl?: string;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IGroupMembership {
+  id: string;
+  userId: string;
+  groupId: string;
+  joinedAt: Date;
+  role: "member" | "admin";
 }

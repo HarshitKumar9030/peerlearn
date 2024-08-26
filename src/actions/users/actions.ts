@@ -4,10 +4,11 @@ import { createClient } from "@/lib/supabase/server"
 interface User {
     username: string;
     avatarUrl?: string;
+    supabaseId: string;
 }
 
-export async function createUser({ username, avatarUrl }: User) {
-    const supabase = createClient();
+export async function createUser({ username, avatarUrl, supabaseId }: User) {
+    const supabase = createClient(supabaseId);
     const { data: supabaseData, error: supabaseError } = await supabase
     .from("users")
     .insert({

@@ -21,7 +21,7 @@ export async function handleOnboarding(
     throw new Error("Failed to update MongoDB user profile.");
   }
 
-  const supabase = createClient();
+  const supabase = createClient(supabaseId);
   const { data, error } = await supabase.from("users").upsert({
     id: updatedUser.supabaseId, // Pass the correct Supabase ID
     username,
@@ -45,7 +45,7 @@ export async function checkOnboardingStatus(supabaseId: string) {
       return { isOnboarded: true };
     }
     // else check with supabase
-    const supabase = createClient();
+    const supabase = createClient(supabaseId);
     const { data, error } = await supabase
       .from("users")
       .select("username")
@@ -72,8 +72,8 @@ export async function checkOnboardingStatus(supabaseId: string) {
   }
 }
 
-export async function checkUsernameAvailability(username: string) {
-  const supabase = createClient();
+export async function checkUsernameAvailability(username: string, supabaseId: string) {
+  const supabase = createClient(supabaseId);
   const { data, error } = await supabase
     .from("users")
     .select("username")

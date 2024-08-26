@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { baseId } from "@/constants";
 
 const userSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -98,12 +99,13 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    
+    // This logic of generating a username here is outdated still I am leaving the code here, this is now managed in onboarding component!
 
-    const supabase = createClient();
+    const supabase = createClient(baseId);
     const { data: supabaseData, error: supabaseError } = await supabase
       .from("users")
       .insert({
-        username,
         avatar_url: null,
       })
       .select("id")

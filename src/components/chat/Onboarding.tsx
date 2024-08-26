@@ -32,7 +32,6 @@ export default function Onboarding({ supabaseId }: { supabaseId: string }) {
     return true;
   };
 
-  // Debounce function to limit the frequency of API calls
   function debounce(func: Function, delay: number) {
     let timer: NodeJS.Timeout;
     return (...args: any) => {
@@ -41,17 +40,17 @@ export default function Onboarding({ supabaseId }: { supabaseId: string }) {
     };
   }
 
-  const checkUsername = debounce(async (username: string) => {
+  const checkUsername = debounce(async (username: string, supabaseId: string) => {
     if (!username) return;
     setCheckingUsername(true);
-    const isAvailable = await checkUsernameAvailability(username);
+    const isAvailable = await checkUsernameAvailability(username, supabaseId);
     setUsernameAvailable(isAvailable);
     setCheckingUsername(false);
   }, 500); // 500ms debounce delay
 
   useEffect(() => {
     if (isValidUsername(username)) {
-      checkUsername(username);
+      checkUsername(username, supabaseId);
     } else {
       setUsernameAvailable(false);
     }
