@@ -17,6 +17,7 @@ export type MessageItemProps = {
 export function MessageItem({ message, onReply, onReact, onUnsend, session }: MessageItemProps) {
   const [showReactions, setShowReactions] = useState(false);
   const [isUnsendModalOpen, setIsUnsendModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   // Parse reactions as the stringified JSON object
   const reactions = message.reactions ? JSON.parse(message.reactions) : {};
@@ -45,23 +46,35 @@ export function MessageItem({ message, onReply, onReact, onUnsend, session }: Me
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       <div className="max-w-xs lg:max-w-sm relative">
-        <div className={`relative p-3 ${bubbleStyles}`}>
+        <div className={`relative p-3 ${bubbleStyles} shadow-md`}>
           <p className="text-sm">{message.content}</p>
+          
           {message.imageUrl && (
             <div className="mt-2">
-              <img src={message.imageUrl} alt="Attached" className="rounded-lg max-w-full h-auto" />
+              {/* Button to Show Image */}
+              <button
+                onClick={() => setIsImageModalOpen(true)}
+                className="px-2 py-1 mt-2 text-sm text-white rounded-xl bg-neutral-700  transition-colors"
+              >
+                View Image -&gt; 
+              </button>
             </div>
           )}
 
           {/* Reactions Display */}
           {Object.keys(reactions).length > 0 && (
-            <div className="flex px-2 py-1 bg-neutral-500 rounded-lg space-x-2 mt-2">
+            <motion.div
+              className="flex px-2 py-1 bg-neutral-500 rounded-lg space-x-2 mt-2 shadow-inner"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               {Object.entries(reactions).map(([emoji, users]: any) => (
-                <span key={emoji} className="text-xl">
+                <span key={emoji} className="text-xl flex items-center">
                   {emoji} {users.length > 1 && <span className="text-sm text-neutral-300">({users.length})</span>}
                 </span>
               ))}
-            </div>
+            </motion.div>
           )}
 
           {/* Timestamp */}
@@ -77,19 +90,22 @@ export function MessageItem({ message, onReply, onReact, onUnsend, session }: Me
           <div className="absolute z-[60] -top-[8px] right-2 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={() => setShowReactions(!showReactions)}
-              className="hover:text-purple-300"
+              className="hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400"
+              aria-label="React to message"
             >
               😍
             </button>
             <button
               onClick={() => onReply(message)}
-              className="hover:text-blue-300"
+              className="hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+              aria-label="Reply to message"
             >
               ↩️
             </button>
             <button
               onClick={() => setIsUnsendModalOpen(true)}
-              className="hover:text-red-300"
+              className="hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400"
+              aria-label="Unsend message"
             >
               ❌
             </button>
@@ -97,19 +113,32 @@ export function MessageItem({ message, onReply, onReact, onUnsend, session }: Me
         </div>
       </div>
 
-      {/* Reaction Picker Positioned Compactly */}
       {showReactions && (
-        <div className={`absolute ${isSender ? "right-16" : "left-16"} top-0 z-10`}>
+        <motion.div
+          className={`absolute ${isSender ? "right-16" : "left-16"} top-0 z-10`}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        >
           <ReactionPicker
             onSelect={(emoji: string) => {
               onReact(message.id, emoji);
               setShowReactions(false);
             }}
           />
-        </div>
+        </motion.div>
       )}
 
-      {/* Unsend Confirmation Modal */}
+      {isImageModalOpen && (
+        <Modal title="View Image" onClose={() => setIsImageModalOpen(false)}>
+          <img
+            src={message.imageUrl}
+            alt="Attached"
+            className="rounded-lg max-w-full h-auto"
+          />
+        </Modal>
+      )}
+
       {isUnsendModalOpen && (
         <Modal
           title="Confirm Unsend"
