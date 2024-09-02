@@ -37,7 +37,7 @@ NEXT_PUBLIC_APP_URL=https://localhost:3000
 NEXTAUTH_SECRET=your-nextauth-secret-here
 ```
 
-> **Pro Tip**: Use `npx nextauth secret` to generate a strong secret for `NEXTAUTH_SECRET`! 🔐
+> **Pro Tip**: Use `npx auth secret` to generate a strong secret for `NEXTAUTH_SECRET`! 🔐
 
 ### 4. Run the Development Server 🏃‍♂️
 
